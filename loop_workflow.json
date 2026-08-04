@@ -1,0 +1,488 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        32,
+        0
+      ],
+      "id": "76a68ef3-6210-4416-9389-7836d1c3c790",
+      "name": "Telegram Trigger",
+      "webhookId": "65fdd34b-358f-48c0-84af-2a7c9701db66",
+      "credentials": {
+        "telegramApi": {
+          "id": "oec6aSRZYmPbrlTI",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "q": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Search_Query__q_', ``, 'string') }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-serpapi.serpApiTool",
+      "typeVersion": 1,
+      "position": [
+        352,
+        192
+      ],
+      "id": "333d7fc8-3375-4ffb-938e-ce503538cc88",
+      "name": "Google search in SerpApi",
+      "credentials": {
+        "serpApi": {
+          "id": "V0owrTabb1LWRAlP",
+          "name": "SerpApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+        "text": "={{ $('Analyze Agent').last().json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1376,
+        -192
+      ],
+      "id": "2e0f0db4-3525-4e25-a27d-458cd9366ed5",
+      "name": "Send a text message",
+      "webhookId": "6d496fd4-835a-494e-9662-a87d6c36be55",
+      "credentials": {
+        "telegramApi": {
+          "id": "oec6aSRZYmPbrlTI",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        208,
+        192
+      ],
+      "id": "beb69896-41e8-45ab-a3f9-1928a58f127b",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "cVeCNg0d7TIqPDt6",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        544,
+        208
+      ],
+      "id": "94b75975-bcb0-4210-9b50-90aadc52af26",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "cVeCNg0d7TIqPDt6",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "c515deb2-3cba-43ff-8c25-d66a617fd0dc",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "PASS",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        864,
+        80
+      ],
+      "id": "276bad1a-6dcc-45d2-b08f-0d4c51fe5ae0",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.output }}",
+        "options": {
+          "systemMessage": "=Bạn là một hệ thống chấm điểm dữ liệu tự động. Nhiệm vụ của bạn là đối chiếu và đánh giá ở mức độ đánh giá ở mức độ cơ bản nhất, đừng chấm khắc khe quá, xem \"Mục 4: Đánh giá tiềm năng ngắn hạn\" có hợp logic và được hỗ trợ bởi các số liệu đầu vào từ \"Mục 1\", \"Mục 2\", và \"Mục 3\" hay không.\n\nQUY TẮC PHẢN HỒI BẮT BUỘC:\n\nNếu kết quả ĐẠT yêu cầu: Chỉ xuất ra duy nhất chuỗi PASS\n\nNếu kết quả KHÔNG ĐẠT yêu cầu: Chỉ xuất ra duy nhất chuỗi FAIL\n\nTuyệt đối KHÔNG giải thích. KHÔNG thêm dấu chấm câu. KHÔNG viết bất kỳ từ nào khác ngoài PASS hoặc FAIL."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        544,
+        0
+      ],
+      "id": "67a97c6d-ad60-4d2d-9b76-d67a63d4ddbc",
+      "name": "Evaluator Agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Telegram Trigger').first().json.message.text }}, {{ $now.setZone('Asia/Ho_Chi_Minh').toFormat('yyyy-MM-dd HH:mm:ss') }}",
+        "options": {
+          "systemMessage": "=Vai trò: Chuyên gia tài chính. Dùng tìm kiếm cơ bản, xuất kết quả text cực kỳ ngắn gọn, loại bỏ tất cả kí tự Markdown, in đậm cho mã {Input}:\n1. Giá đóng cửa 5 ngày qua (Tìm đủ trong 5 ngày) .\n2. ROI, ROE 1 năm (ghi chú nếu thiếu).\n3. Giá hiện tại vs MA50, MA250 (hoặc MA200).\n4. Dựa trên số liệu tìm kiếm được, Đánh giá tiềm năng ngắn hạn.\nQUY TẮC BẮT BUỘC: Bạn chỉ được phép sử dụng công cụ tìm kiếm TỐI ĐA 2 LẦN (ngoại trừ mục 1). Hãy gộp các từ khóa tìm kiếm lại cho hiệu quả."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "5b83d62b-1295-41ac-bafc-68112545d2e4",
+      "name": "Analyze Agent"
+    },
+    {
+      "parameters": {
+        "jsCode": "// $runIndex tự động đếm số lần node này được gọi (lần 1 = 0, lần 2 = 1,...)\nlet currentCount = $runIndex + 1;\n\nreturn { retryCount: currentCount };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1104,
+        96
+      ],
+      "id": "4394b7bc-184e-4764-b822-a4b4bd6d8dd4",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "c515deb2-3cba-43ff-8c25-d66a617fd0dc",
+              "leftValue": "={{ $json.retryCount }}",
+              "rightValue": 2,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1248,
+        96
+      ],
+      "id": "30fadb21-dbd4-4806-88b6-f5d655521a23",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1VnejzsB9XPTOCz271TfPhtls7aYioHt9wJlpWfRRbDE",
+          "mode": "list",
+          "cachedResultName": "finance_statefile",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VnejzsB9XPTOCz271TfPhtls7aYioHt9wJlpWfRRbDE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VnejzsB9XPTOCz271TfPhtls7aYioHt9wJlpWfRRbDE/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Thời gian": "={{ $now.setZone('Asia/Ho_Chi_Minh').toFormat('yyyy-MM-dd HH:mm:ss') }}",
+            "ChatID": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+            "Câu hỏi User": "={{ $('Telegram Trigger').first().json.message.text }}",
+            "Trả lời của AI": "={{ $('Analyze Agent').last().json.output }}",
+            "Đánh giá câu trả lời": "={{ $json.output }}",
+            "Câu trả lời cuối cùng": "={{ ($json.output === 'PASS' || $runIndex >= 2) ? 'x' : '' }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Thời gian",
+              "displayName": "Thời gian",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ChatID",
+              "displayName": "ChatID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Câu hỏi User",
+              "displayName": "Câu hỏi User",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Trả lời của AI",
+              "displayName": "Trả lời của AI",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Đánh giá câu trả lời",
+              "displayName": "Đánh giá câu trả lời",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Câu trả lời cuối cùng",
+              "displayName": "Câu trả lời cuối cùng",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        880,
+        -160
+      ],
+      "id": "6ca06df1-08cf-474c-a4cd-f5437aaa73e3",
+      "name": "Statefile",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "SAMxf7yvmDPcOKGq",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Analyze Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google search in SerpApi": {
+      "ai_tool": [
+        [
+          {
+            "node": "Analyze Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Analyze Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        []
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Evaluator Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evaluator Agent": {
+      "main": [
+        [
+          {
+            "node": "Statefile",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Agent": {
+      "main": [
+        [
+          {
+            "node": "Evaluator Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Analyze Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Statefile": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "9206d5c2-ee93-489b-8082-92e61d2ea4f9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "186dc557848aeb7505cfbb0c375f173197149978e0c9479ac8d2fabcc8cd20e8"
+  },
+  "nodeGroups": [],
+  "id": "9so9ZKFz1VzwwGU2",
+  "tags": []
+}
