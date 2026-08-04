@@ -8,12 +8,9 @@
 
 ## 🖼️ Sơ đồ quy trình
 
-> Chèn ảnh chụp màn hình workflow n8n vào đây:
+<!-- ẢNH SƠ ĐỒ QUY TRÌNH N8N -->
+<img width="1685" height="346" alt="image" src="https://github.com/user-attachments/assets/c72c4e9f-76b4-4538-9014-d69008d17d19" />
 
-```
-<img width="1060" height="406" alt="image" src="https://github.com/user-attachments/assets/86b2e58d-f86a-4135-bf10-1dc9f1c30a03" />
-
-```
 
 ## ⚙️ Các bước trong quy trình
 
@@ -32,12 +29,10 @@
 
 Quy trình trên được xây dựng dựa trên một khung tư duy gồm **4 node/khối cơ bản**, lặp lại theo chu kỳ "NEXT RUN" — đây chính là nguyên lý nền tảng cho cơ chế vòng lặp (looping) đã mô tả ở trên:
 
-> Chèn ảnh sơ đồ 4 node cơ bản vào đây:
+> Chèn ảnh sơ đồ 4 node cơ bản vào đây (dán thẻ `<img>` hoặc `![alt](link)` trực tiếp, KHÔNG để trong khối code ```):
+<!-- ẢNH SƠ ĐỒ 4 NODE CƠ BẢN -->
+<img width="1692" height="421" alt="image" src="https://github.com/user-attachments/assets/960d55e4-39ef-4d02-b082-cdccfdf645b8" />
 
-```
-<img width="1692" height="421" alt="image" src="https://github.com/user-attachments/assets/72967113-3377-4684-b035-f990fcee576c" />
-
-```
 
 | # | Node | Vai trò | Thành phần tương ứng |
 |---|------|---------|----------------------|
